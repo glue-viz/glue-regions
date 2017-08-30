@@ -9,12 +9,8 @@ entry_points = """
 myplugin=myplugin:setup
 """
 
-try:
-    import pypandoc
-    LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
-    with open('README.md') as infile:
-        LONG_DESCRIPTION = infile.read()
+with open('README.rst') as infile:
+    LONG_DESCRIPTION = infile.read()
 
 with open('myplugin/version.py') as infile:
     exec(infile.read())

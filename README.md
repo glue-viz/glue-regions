@@ -1,1 +1,0 @@
-# glue-plugin-template
