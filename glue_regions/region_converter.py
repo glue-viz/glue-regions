@@ -1,3 +1,4 @@
+import numpy as np
 import regions
 
 from glue.config import data_factory
