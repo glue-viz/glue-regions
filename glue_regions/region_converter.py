@@ -8,6 +8,8 @@ from glue.core.roi import CircularROI, PointROI
 from glue.core.data import Data
 from glue.core.component import Component
 
+from glue.config import layer_action
+from glue.core.subset import RoiSubsetState, CompositeSubsetState
 
 class RegionData(Data):
 
@@ -38,3 +40,24 @@ def ds9_region(filename):
                       regions=reg)
 
     return data
+
+@layer_action(label='Convert to subset')
+def layer_to_subset(selected_layers, data_collection):
+    print(selected_layers)
+    for layer in selected_layers:
+        for data in data_collection:
+            if hasattr(data, 'coords') and hasattr(data.coords, 'wcs'):
+                list_of_rois = layer.to_subset(data.coords.wcs)
+                print("list of rois: {0}".format(list_of_rois))
+
+                roisubstates = [RoiSubsetState(data.coordinate_components[1],
+                                               data.coordinate_components[0],
+                                               roi=roi
+                                              )
+                                for roi in list_of_rois]
+                composite_substate = CompositeSubsetState(roisubstates[0],
+                                                          roisubstates[1])
+                for ii in range(2, len(roisubstates)):
+                    composite_substate = CompositeSubsetState(composite_substate,
+                                                              roisubstates[ii])
+                subset_group = data_collection.new_subset_group(composite_substate)
