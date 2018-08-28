@@ -18,7 +18,6 @@ def ds9_region(filename):
 
 
     comp = Component(np.ones(len(reg), dtype='bool'))
-    data = RegionData(label='Regions from {0}'.format(filename),
-                regions=comp)
+    data = RegionData(label='Regions from {0}'.format(filename), regions=reg)
 
     return data
