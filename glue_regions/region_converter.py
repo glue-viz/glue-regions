@@ -8,6 +8,9 @@ from glue.core.data import Data
 from glue.core.component import Component
 
 
+class RegionData(Data):
+    pass
+
 
 @data_factory('DS9 Region File', has_extension('reg'), default='reg')
 def ds9_region(filename):
@@ -15,7 +18,7 @@ def ds9_region(filename):
 
 
     comp = Component(np.ones(len(reg), dtype='bool'))
-    data = Data(label='Regions from {0}'.format(filename),
+    data = RegionData(label='Regions from {0}'.format(filename),
                 regions=comp)
 
     return data

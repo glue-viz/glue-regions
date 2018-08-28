@@ -25,6 +25,8 @@ class RegionLayerArtist(MatplotlibLayerArtist):
 
         self.mpl_artists = artists
 
+        print("Initialized a RegionLayerArtist")
+
     def get_layer_color(self):
         colors = [artist.color for artist in self.mpl_artists]
         if len(set(colors)) == 1:
