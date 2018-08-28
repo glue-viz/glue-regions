@@ -30,9 +30,10 @@ class RegionLayerArtist(MatplotlibLayerArtist):
         self.mpl_artists = artists
 
         for artist in self.mpl_artists:
-            axes.add_patch(artist)
+            self.axes.add_patch(artist)
 
-        print("Initialized a RegionLayerArtist")
+        self.state.add_callback("visible", self._update_visible)
+        self.state.add_callback("zorder", self._update_zorder)
 
     def get_layer_color(self):
         return 'b'
@@ -44,4 +45,11 @@ class RegionLayerArtist(MatplotlibLayerArtist):
 
     def update(self, view=None):
         self.redraw()
+        
+    def _update_visible(self, visible):
+        for artist in self.mpl_artists:
+            artist.set_visible(visible)
 
+    def _update_zorder(self, zorder):
+        for artist in self.mpl_artists:
+            artist.set_zorder(zorder)
