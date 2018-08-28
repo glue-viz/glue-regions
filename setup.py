@@ -6,18 +6,18 @@ from setuptools import setup, find_packages
 
 entry_points = """
 [glue.plugins]
-myplugin=myplugin:setup
+glue-regions=glue-regions:setup
 """
 
 with open('README.rst') as infile:
     LONG_DESCRIPTION = infile.read()
 
-with open('myplugin/version.py') as infile:
+with open('glue-regions/version.py') as infile:
     exec(infile.read())
 
-setup(name='myplugin',
+setup(name='glue-regions',
       version=__version__,
-      description='My example plugin',
+      description='astropy regions support for glue',
       long_description=LONG_DESCRIPTION,
       url="https://github.com/glue-viz/glue-plugin-template",
       author='',
