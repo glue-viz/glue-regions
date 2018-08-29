@@ -9,7 +9,7 @@ from glue.core.data import Data
 from glue.core.component import Component
 
 from glue.config import layer_action
-from glue.core.subset import RoiSubsetState, OrState
+from glue.core.subset import RoiSubsetState, MultiOrState
 
 class RegionData(Data):
 
@@ -58,8 +58,8 @@ def layer_to_subset(selected_layers, data_collection):
                                     for roi in list_of_rois]
                     composite_substate = roisubstates[0]
                     if len(list_of_rois) > 1:
-                        for ii in range(1, len(roisubstates)):
-                            composite_substate = OrState(composite_substate,
-                                                         roisubstates[ii])
+                        composite_substate = MultiOrState(roisubstates)
+                    else:
+                        composite_substate = roisubstates[0]
                     subset_group = data_collection.new_subset_group(label=layer.label,
                                                                     subset_state=composite_substate)
