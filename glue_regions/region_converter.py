@@ -39,6 +39,20 @@ def reg_to_roi(reg):
     else:
         raise NotImplementedError("Region {0} not recognized".format(reg))
 
+def roi_to_reg(roi):
+    """
+    Function to convert a ROI to a region
+    """
+
+    if isinstance(roi, CircularROI):
+        return regions.CirclePixelRegion(center=(roi.xc, roi.yc, radius=roi.radius))
+    elif isinstance(roi, PointROI):
+        return regions.PointRegion(center=(roi.x, roi.y))
+    elif isinstance(roi, PolygonalROI):
+        return regions.PolygonPixelRegion(vertices=list(zip(roi.vx, roi.vy)))
+    else:
+        raise NotImplementedError("ROI {0} not recognized".format(roi))
+
 
 class RegionData(Data):
 
