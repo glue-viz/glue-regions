@@ -9,7 +9,7 @@ from glue.core.data import Data
 from glue.core.component import Component
 
 from glue.config import layer_action
-from glue.core.subset import RoiSubsetState, CompositeSubsetState
+from glue.core.subset import RoiSubsetState, OrState
 
 class RegionData(Data):
 
@@ -50,7 +50,6 @@ def layer_to_subset(selected_layers, data_collection):
             for data in data_collection:
                 if hasattr(data, 'coords') and hasattr(data.coords, 'wcs'):
                     list_of_rois = layer.to_subset(data.coords.wcs)
-                    print("list of rois: {0}".format(list_of_rois))
 
                     roisubstates = [RoiSubsetState(data.coordinate_components[1],
                                                    data.coordinate_components[0],
@@ -60,7 +59,7 @@ def layer_to_subset(selected_layers, data_collection):
                     composite_substate = roisubstates[0]
                     if len(list_of_rois) > 1:
                         for ii in range(1, len(roisubstates)):
-                            composite_substate = CompositeSubsetState(composite_substate,
-                                                                      roisubstates[ii])
+                            composite_substate = OrState(composite_substate,
+                                                         roisubstates[ii])
                     subset_group = data_collection.new_subset_group(label=layer.label,
                                                                     subset_state=composite_substate)
