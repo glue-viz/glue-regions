@@ -4,12 +4,41 @@ import regions
 
 from glue.config import data_factory
 from glue.core.data_factories import has_extension
-from glue.core.roi import CircularROI, PointROI
+from glue.core.roi import CircularROI, PointROI, RectangularROI, PolygonalROI
 from glue.core.data import Data
 from glue.core.component import Component
 
 from glue.config import layer_action
 from glue.core.subset import RoiSubsetState, MultiOrState
+
+def reg_to_roi(reg):
+    """
+    Function to convert a region to an ROI
+    This might be implementable as a dictionary/registry,
+    but hard-coding it isn't more difficult...
+    """
+
+    if isinstance(reg, regions.CirclePixelRegion):
+        return CircularROI(xc=reg.center.x, yc=reg.center.y, radius=reg.radius)
+    elif isinstance(reg, regions.PointPixelRegion):
+        return PointROI(x=reg.center.x, y=reg.center.y)
+    elif isinstance(reg, regions.RectanglePixelRegion):
+        if reg.angle == 0:
+            xmin, xmax = reg.center.x - reg.width / 2, reg.center.x + reg.width / 2
+            ymin, ymax = reg.center.y - reg.height / 2, reg.center.y + reg.height / 2
+            return RectangularROI(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax)
+        else:
+            if hasattr(reg, 'corners'):
+                xverts = [c[0] for c in reg.corners]
+                yverts = [c[1] for c in reg.corners]
+                return PolygonalROI(vx=xverts, vy=yverts)
+            else:
+                raise NotImplementedError("Rectangles need to convert to polygons.")
+    elif isinstance(reg, regions.PolygonPixelRegion):
+        return PolygonalROI(vx=reg.vertices.x, vy=reg.vertices.y)
+    else:
+        raise NotImplementedError("Region {0} not recognized".format(reg))
+
 
 class RegionData(Data):
 
@@ -20,13 +49,7 @@ class RegionData(Data):
                 else reg
                 for reg in self['regions']]
 
-        subsets = [CircularROI(xc=reg.center.x,
-                               yc=reg.center.y,
-                               radius=reg.radius)
-                   if isinstance(reg, regions.CirclePixelRegion)
-                   else PointROI(x=reg.center.x,
-                                 y=reg.center.y)
-                   for reg in preg]
+        subsets = [reg_to_roi(reg) for reg in preg]
         return subsets
 
 
