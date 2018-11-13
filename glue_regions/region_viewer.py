@@ -1,5 +1,14 @@
+from glue.config import layer_artist_maker
 from glue.viewers.matplotlib.layer_artist import MatplotlibLayerArtist
 from glue.viewers.matplotlib.state import MatplotlibLayerState
+from glue.viewers.image.viewer import MatplotlibImageMixin
+
+
+@layer_artist_maker
+def region_layer_artist_maker(viewer, data):
+    if isinstance(viewer, MatplotlibImageMixin) and isinstance(data, RegionData):
+        return RegionLayerArtist(viewer.axes, viewer.state, layer=data)
+
 
 class RegionLayerArtist(MatplotlibLayerArtist):
 
@@ -45,7 +54,7 @@ class RegionLayerArtist(MatplotlibLayerArtist):
 
     def update(self, view=None):
         self.redraw()
-        
+
     def _update_visible(self, visible):
         for artist in self.mpl_artists:
             artist.set_visible(visible)

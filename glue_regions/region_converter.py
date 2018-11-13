@@ -11,6 +11,7 @@ from glue.core.component import Component
 from glue.config import layer_action
 from glue.core.subset import RoiSubsetState, MultiOrState
 
+
 def reg_to_roi(reg):
     """
     Function to convert a region to an ROI
@@ -39,13 +40,14 @@ def reg_to_roi(reg):
     else:
         raise NotImplementedError("Region {0} not recognized".format(reg))
 
+
 def roi_to_reg(roi):
     """
     Function to convert a ROI to a region
     """
 
     if isinstance(roi, CircularROI):
-        return regions.CirclePixelRegion(center=(roi.xc, roi.yc, radius=roi.radius))
+        return regions.CirclePixelRegion(center=(roi.xc, roi.yc), radius=roi.radius)
     elif isinstance(roi, PointROI):
         return regions.PointRegion(center=(roi.x, roi.y))
     elif isinstance(roi, PolygonalROI):
@@ -67,7 +69,6 @@ class RegionData(Data):
         return subsets
 
 
-
 @data_factory('DS9 Region File', has_extension('reg'), default='reg')
 def ds9_region(filename):
     reg = regions.read_ds9(filename)
@@ -77,6 +78,7 @@ def ds9_region(filename):
                       regions=reg)
 
     return data
+
 
 @layer_action(label='Convert regions to subset')
 def layer_to_subset(selected_layers, data_collection):
